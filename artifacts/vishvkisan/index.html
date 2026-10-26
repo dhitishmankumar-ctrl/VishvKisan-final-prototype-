@@ -246,6 +246,26 @@ body.role-farmer .customer-only{display:none!important}body.role-customer .farme
 .pesticide-safety-source{margin:11px 0 0!important;padding-top:9px;border-top:1px solid #ffffff1a;color:#a9c4ae!important;font-size:10px!important;line-height:1.5!important}
 .pesticide-safety-source a{color:#c6ed83;text-decoration:underline;text-underline-offset:2px}
 @media(max-width:500px){.pesticide-safety{padding:13px}.modal{padding:20px}}
+.expert-intro{margin:0 0 18px;padding:17px 19px;border:1px solid #35533b;border-radius:18px;background:linear-gradient(115deg,#173b29,#131f17);color:#dbe9dc;line-height:1.65}
+.expert-intro strong{color:#c6ed83}
+.expert-tech-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 20px}
+.expert-tech-card{min-width:0;padding:16px;border:1px solid var(--line);border-radius:17px;background:var(--card)}
+.expert-tech-icon{font-size:23px}
+.expert-tech-card h4{margin:9px 0 6px;font:800 14px Manrope,sans-serif}
+.expert-tech-card p{margin:0;color:var(--muted);font-size:11px;line-height:1.55}
+.expert-chat-panel{padding:18px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+.expert-chat-list{display:grid;gap:11px;max-height:380px;overflow:auto;margin:12px 0 16px}
+.expert-chat-message{max-width:92%;padding:12px 14px;border-radius:15px;font-size:12px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
+.expert-chat-message.user{justify-self:end;background:#254732;color:#f3fff4;border-bottom-right-radius:5px}
+.expert-chat-message.assistant{justify-self:start;background:#17251b;border:1px solid #2d4433;color:#e2eee3;border-bottom-left-radius:5px}
+.expert-chat-message audio{display:block;width:min(300px,100%);height:38px;margin-top:9px}
+.expert-chat-compose{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:end}
+.expert-chat-compose textarea{width:100%;min-height:48px;max-height:150px;resize:vertical;background:#0d1710;color:var(--ink);border:1px solid var(--line);border-radius:13px;padding:13px}
+.expert-voice-btn{min-height:46px;white-space:nowrap}
+.expert-chat-status{min-height:18px;margin:9px 2px 0;color:var(--muted);font-size:11px}
+.expert-disclaimer{margin:15px 0 0;color:var(--muted);font-size:10px;line-height:1.55}
+@media(max-width:800px){.expert-tech-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.expert-tech-grid{grid-template-columns:1fr}.expert-chat-panel{padding:14px}.expert-chat-compose{grid-template-columns:1fr 1fr}.expert-chat-compose textarea{grid-column:1/-1}.expert-voice-btn{width:100%}}
 </style>
 </head>
 <body>
@@ -256,7 +276,7 @@ body.role-farmer .customer-only{display:none!important}body.role-customer .farme
     <h1>Good decisions<br>begin <em>in the field.</em></h1>
     <p class="welcome-intro">A marketplace connecting the people who grow our food with the families who buy it — with local produce, weather, crop knowledge and farmer support in one place.</p>
     <div class="welcome-actions"><button class="btn primary" id="enterDashboard">Explore VishvKisan <span>↗</span></button><button class="btn ghost" id="welcomeLogin">Sign in / Register</button></div><div class="role-shortcuts" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><button class="btn ghost" id="farmerEntry">🌱 Farmer Login</button><button class="btn ghost" id="customerEntry">🧺 Customer Login</button></div>
-    <div class="welcome-foot">Designed for farmers and families · Assam, India<br>Prototype preview — sample market data and browser-only profiles are clearly identified.</div>
+    <div class="welcome-foot">Designed for farmers and families · Assam, India<br>Prototype preview — sample market data and browser-only profiles are clearly identified.<br>Early prototype — more improvements and advanced features are planned for future releases.</div>
   </div>
 </section>
 <div class="app" id="mainApp" hidden>
@@ -271,6 +291,7 @@ body.role-farmer .customer-only{display:none!important}body.role-customer .farme
     <button data-page="profit"><span>₹</span> Profit Calculator</button>
     <button data-page="farmtools"><span>✦</span> Smart Farm Tools</button>
     <button data-page="safety"><span>🛡</span> Pesticide Safety</button>
+    <button data-page="expert"><span>✧</span> AI Kisan Expert</button>
     <button data-page="orders"><span>▣</span> Orders & Bulk Buying</button>
     <button data-page="community"><span>♧</span> Kisan Community</button>
     <button data-page="schemes"><span>▤</span> Government schemes</button>
@@ -513,6 +534,31 @@ body.role-farmer .customer-only{display:none!important}body.role-customer .farme
         <p class="pesticide-safety-source">WHO explains how pesticide-residue risk is assessed; national authorities enforce food-residue limits. <a href="https://www.who.int/news-room/fact-sheets/detail/pesticide-residues-in-food" target="_blank" rel="noopener noreferrer">Read WHO food-safety guidance ↗</a></p>
       </section>
     </div>
+  </section>
+  <section class="content" id="page-expert">
+    <div class="section-head"><div><h3>AI Kisan Expert</h3><p>Modern farming ideas and practical crop-health questions, by text or voice.</p></div><span class="pill">AI assistant · prototype</span></div>
+    <div class="expert-intro"><strong>Ask about your crop, field conditions, or a farming technique.</strong> Include the crop, growth stage, location, and what you observed for more useful guidance. The assistant can make mistakes; confirm important decisions with a local agriculture extension expert.</div>
+    <div class="expert-tech-grid" aria-label="Modern agriculture techniques">
+      <article class="expert-tech-card"><span class="expert-tech-icon" aria-hidden="true">🧪</span><h4>Soil-first decisions</h4><p>Use a soil test and crop stage to guide nutrient planning instead of guessing from leaf colour alone.</p></article>
+      <article class="expert-tech-card"><span class="expert-tech-icon" aria-hidden="true">💧</span><h4>Water-smart farming</h4><p>Check soil moisture, drainage, and weather before irrigation; consider efficient methods where suitable for the crop.</p></article>
+      <article class="expert-tech-card"><span class="expert-tech-icon" aria-hidden="true">🐞</span><h4>Integrated pest management</h4><p>Scout regularly, identify the pest, and consider cultural or biological controls before any pesticide decision.</p></article>
+      <article class="expert-tech-card"><span class="expert-tech-icon" aria-hidden="true">🌱</span><h4>Crop and soil resilience</h4><p>Ask a local adviser about rotation, residue cover, suitable varieties, and practices for your soil and season.</p></article>
+      <article class="expert-tech-card"><span class="expert-tech-icon" aria-hidden="true">🔎</span><h4>Crop-health checks</h4><p>Compare affected and healthy plants; note symptom patterns, leaf undersides, waterlogging, and recent weather.</p></article>
+      <article class="expert-tech-card"><span class="expert-tech-icon" aria-hidden="true">📦</span><h4>Care after harvest</h4><p>Clean containers, shade fresh produce, and choose storage suited to the crop to help reduce avoidable losses.</p></article>
+    </div>
+    <section class="expert-chat-panel" aria-labelledby="expertChatTitle">
+      <div class="section-head"><div><h3 id="expertChatTitle">Ask the expert</h3><p>Type a question or record a short voice question.</p></div></div>
+      <div class="expert-chat-list" id="expertChatList" aria-live="polite" aria-label="Expert conversation">
+        <div class="expert-chat-message assistant">Namaste! Tell me your crop, growth stage, and what you’re noticing. I can share general crop-health checks and modern farming ideas.</div>
+      </div>
+      <form class="expert-chat-compose" id="expertChatForm">
+        <textarea id="expertQuestion" data-testid="input-expert-question" maxlength="1200" placeholder="Example: My paddy leaves are yellowing after heavy rain. What should I check first?" aria-label="Ask the AI Kisan Expert"></textarea>
+        <button class="btn green" type="submit" id="expertAskButton" data-testid="button-ask-expert">Ask</button>
+        <button class="btn ghost expert-voice-btn" type="button" id="expertVoiceButton" data-testid="button-voice-expert">🎙 Ask by voice</button>
+      </form>
+      <div class="expert-chat-status" id="expertChatStatus" role="status" aria-live="polite"></div>
+      <p class="expert-disclaimer">AI-generated information is not a diagnosis or local agronomy approval. Do not rely on it for pesticide product or dosage instructions; always follow registered product labels and local rules. Voice recordings are processed by OpenAI and are not saved by this app.</p>
+    </section>
   </section>
 </main>
 </div>

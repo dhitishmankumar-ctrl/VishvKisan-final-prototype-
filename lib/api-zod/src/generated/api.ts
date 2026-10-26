@@ -245,3 +245,42 @@ export const SubmitDemoOrderResponse = zod.object({
 })
 
 
+/**
+ * @summary Ask the AI Kisan Expert a text question
+ */
+export const askKisanExpertBodyQuestionMax = 1200;
+
+export const askKisanExpertBodyHistoryItemContentMax = 1200;
+
+export const askKisanExpertBodyHistoryMax = 8;
+
+
+
+export const AskKisanExpertBody = zod.object({
+  "role": zod.enum(['farmer', 'customer']),
+  "question": zod.string().min(1).max(askKisanExpertBodyQuestionMax),
+  "history": zod.array(zod.object({
+  "role": zod.enum(['user', 'assistant']),
+  "content": zod.string().min(1).max(askKisanExpertBodyHistoryItemContentMax)
+})).max(askKisanExpertBodyHistoryMax).optional()
+})
+
+export const AskKisanExpertResponse = zod.object({
+  "answer": zod.string()
+})
+
+
+/**
+ * @summary Ask the AI Kisan Expert a spoken question
+ */
+export const AskKisanExpertByVoiceQueryParams = zod.object({
+  "role": zod.enum(['farmer', 'customer'])
+})
+
+export const AskKisanExpertByVoiceResponse = zod.object({
+  "answer": zod.string(),
+  "audioBase64": zod.string(),
+  "audioContentType": zod.enum(['audio/wav'])
+})
+
+

@@ -139,6 +139,59 @@ export interface DemoOrder {
   createdAt: string;
 }
 
+export type KisanExpertChatTurnRole = typeof KisanExpertChatTurnRole[keyof typeof KisanExpertChatTurnRole];
+
+
+export const KisanExpertChatTurnRole = {
+  user: 'user',
+  assistant: 'assistant',
+} as const;
+
+export interface KisanExpertChatTurn {
+  role: KisanExpertChatTurnRole;
+  /**
+     * @minLength 1
+     * @maxLength 1200
+     */
+  content: string;
+}
+
+export type KisanExpertAskInputRole = typeof KisanExpertAskInputRole[keyof typeof KisanExpertAskInputRole];
+
+
+export const KisanExpertAskInputRole = {
+  farmer: 'farmer',
+  customer: 'customer',
+} as const;
+
+export interface KisanExpertAskInput {
+  role: KisanExpertAskInputRole;
+  /**
+     * @minLength 1
+     * @maxLength 1200
+     */
+  question: string;
+  /** @maxItems 8 */
+  history?: KisanExpertChatTurn[];
+}
+
+export interface KisanExpertAnswer {
+  answer: string;
+}
+
+export type KisanExpertVoiceAnswerAudioContentType = typeof KisanExpertVoiceAnswerAudioContentType[keyof typeof KisanExpertVoiceAnswerAudioContentType];
+
+
+export const KisanExpertVoiceAnswerAudioContentType = {
+  'audio/wav': 'audio/wav',
+} as const;
+
+export interface KisanExpertVoiceAnswer {
+  answer: string;
+  audioBase64: string;
+  audioContentType: KisanExpertVoiceAnswerAudioContentType;
+}
+
 export type GetMarketPriceGuidanceParams = {
 cropType: string;
 /**
@@ -156,5 +209,17 @@ export const GetMarketPriceGuidanceUnit = {
   kg: 'kg',
   quintal: 'quintal',
   ton: 'ton',
+} as const;
+
+export type AskKisanExpertByVoiceParams = {
+role: AskKisanExpertByVoiceRole;
+};
+
+export type AskKisanExpertByVoiceRole = typeof AskKisanExpertByVoiceRole[keyof typeof AskKisanExpertByVoiceRole];
+
+
+export const AskKisanExpertByVoiceRole = {
+  farmer: 'farmer',
+  customer: 'customer',
 } as const;
 

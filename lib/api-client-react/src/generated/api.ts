@@ -21,10 +21,14 @@ import type {
 
 import type {
   ApiError,
+  AskKisanExpertByVoiceParams,
   DemoOrder,
   DemoOrderInput,
   GetMarketPriceGuidanceParams,
   HealthStatus,
+  KisanExpertAnswer,
+  KisanExpertAskInput,
+  KisanExpertVoiceAnswer,
   MarketplaceListing,
   MarketplaceListingInput,
   PriceGuidance,
@@ -711,5 +715,189 @@ export const useSubmitDemoOrder = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getSubmitDemoOrderMutationOptions(options));
+    }
+
+export const getAskKisanExpertUrl = () => {
+
+
+
+
+  return `/api/kisan-expert/ask`
+}
+
+/**
+ * @summary Ask the AI Kisan Expert a text question
+ */
+export const askKisanExpert = async (kisanExpertAskInput: KisanExpertAskInput, options?: Parameters<typeof customFetch>[1]): Promise<KisanExpertAnswer> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<KisanExpertAnswer>(getAskKisanExpertUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(kisanExpertAskInput)
+  }
+);}
+
+
+
+
+
+export const getAskKisanExpertMutationKey = () => ['askKisanExpert'] as const;
+
+export const getAskKisanExpertMutationOptions = <TError = ErrorType<ApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askKisanExpert>>, TError,AskKisanExpertMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof askKisanExpert>>, TError,AskKisanExpertMutationVariables, TContext> => {
+
+const mutationKey = getAskKisanExpertMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof askKisanExpert>>, AskKisanExpertMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  askKisanExpert(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AskKisanExpertMutationResult = NonNullable<Awaited<ReturnType<typeof askKisanExpert>>>
+    export type AskKisanExpertMutationBody = BodyType<KisanExpertAskInput>
+    export type AskKisanExpertMutationError = ErrorType<ApiError>
+    export type AskKisanExpertMutationVariables = {data: BodyType<KisanExpertAskInput>}
+
+    /**
+ * @summary Ask the AI Kisan Expert a text question
+ */
+export const useAskKisanExpert = <TError = ErrorType<ApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askKisanExpert>>, TError,AskKisanExpertMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof askKisanExpert>>,
+        TError,
+        AskKisanExpertMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAskKisanExpertMutationOptions(options));
+    }
+
+export const getAskKisanExpertByVoiceUrl = (params: AskKisanExpertByVoiceParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/kisan-expert/voice?${stringifiedParams}` : `/api/kisan-expert/voice`
+}
+
+/**
+ * @summary Ask the AI Kisan Expert a spoken question
+ */
+export const askKisanExpertByVoice = async (askKisanExpertByVoiceBody: Blob,
+    params: AskKisanExpertByVoiceParams, options?: Parameters<typeof customFetch>[1]): Promise<KisanExpertVoiceAnswer> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<KisanExpertVoiceAnswer>(getAskKisanExpertByVoiceUrl(params),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'audio/webm', ...getHeaders(options?.headers) },
+    body: askKisanExpertByVoiceBody
+  }
+);}
+
+
+
+
+
+export const getAskKisanExpertByVoiceMutationKey = () => ['askKisanExpertByVoice'] as const;
+
+export const getAskKisanExpertByVoiceMutationOptions = <TError = ErrorType<ApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askKisanExpertByVoice>>, TError,AskKisanExpertByVoiceMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof askKisanExpertByVoice>>, TError,AskKisanExpertByVoiceMutationVariables, TContext> => {
+
+const mutationKey = getAskKisanExpertByVoiceMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof askKisanExpertByVoice>>, AskKisanExpertByVoiceMutationVariables> = (props) => {
+          const {data,params} = props ?? {};
+
+          return  askKisanExpertByVoice(data,params,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AskKisanExpertByVoiceMutationResult = NonNullable<Awaited<ReturnType<typeof askKisanExpertByVoice>>>
+    export type AskKisanExpertByVoiceMutationBody = BodyType<Blob>
+    export type AskKisanExpertByVoiceMutationError = ErrorType<ApiError>
+    export type AskKisanExpertByVoiceMutationVariables = {data: BodyType<Blob>;params: AskKisanExpertByVoiceParams}
+
+    /**
+ * @summary Ask the AI Kisan Expert a spoken question
+ */
+export const useAskKisanExpertByVoice = <TError = ErrorType<ApiError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askKisanExpertByVoice>>, TError,AskKisanExpertByVoiceMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof askKisanExpertByVoice>>,
+        TError,
+        AskKisanExpertByVoiceMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAskKisanExpertByVoiceMutationOptions(options));
     }
 

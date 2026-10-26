@@ -12,6 +12,8 @@ tags:
     description: Health operations
   - name: marketplace
     description: Farmer listings, storage points, price guidance, and demo orders
+  - name: kisan-expert
+    description: AI-assisted crop knowledge and voice guidance
 paths:
   /healthz:
     get:
@@ -179,6 +181,94 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DemoOrder"
+  /kisan-expert/ask:
+    post:
+      operationId: askKisanExpert
+      tags: [kisan-expert]
+      summary: Ask the AI Kisan Expert a text question
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KisanExpertAskInput"
+      responses:
+        "200":
+          description: AI-generated agricultural guidance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KisanExpertAnswer"
+        "400":
+          description: Invalid question
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "429":
+          description: AI usage limit reached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: AI service is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /kisan-expert/voice:
+    post:
+      operationId: askKisanExpertByVoice
+      tags: [kisan-expert]
+      summary: Ask the AI Kisan Expert a spoken question
+      parameters:
+        - name: role
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [farmer, customer]
+      requestBody:
+        required: true
+        content:
+          audio/webm:
+            schema:
+              type: string
+              format: binary
+          audio/mp4:
+            schema:
+              type: string
+              format: binary
+          audio/ogg:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: Spoken AI answer and generated audio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KisanExpertVoiceAnswer"
+        "400":
+          description: Invalid or unsupported audio
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "429":
+          description: AI usage limit reached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: AI service is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
 components:
   schemas:
     HealthStatus:
@@ -389,4 +479,48 @@ components:
           type: string
           format: date-time
       required: [id, itemCount, totalAmount, status, createdAt]
+    KisanExpertChatTurn:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+          minLength: 1
+          maxLength: 1200
+      required: [role, content]
+    KisanExpertAskInput:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [farmer, customer]
+        question:
+          type: string
+          minLength: 1
+          maxLength: 1200
+        history:
+          type: array
+          maxItems: 8
+          items:
+            $ref: "#/components/schemas/KisanExpertChatTurn"
+      required: [role, question]
+    KisanExpertAnswer:
+      type: object
+      properties:
+        answer:
+          type: string
+      required: [answer]
+    KisanExpertVoiceAnswer:
+      type: object
+      properties:
+        answer:
+          type: string
+        audioBase64:
+          type: string
+        audioContentType:
+          type: string
+          enum: [audio/wav]
+      required: [answer, audioBase64, audioContentType]
 

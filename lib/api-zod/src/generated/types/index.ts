@@ -7,12 +7,21 @@
  */
 
 export * from './apiError';
+export * from './askKisanExpertByVoiceParams';
+export * from './askKisanExpertByVoiceRole';
 export * from './demoOrder';
 export * from './demoOrderInput';
 export * from './demoOrderLine';
 export * from './getMarketPriceGuidanceParams';
 export * from './getMarketPriceGuidanceUnit';
 export * from './healthStatus';
+export * from './kisanExpertAnswer';
+export * from './kisanExpertAskInput';
+export * from './kisanExpertAskInputRole';
+export * from './kisanExpertChatTurn';
+export * from './kisanExpertChatTurnRole';
+export * from './kisanExpertVoiceAnswer';
+export * from './kisanExpertVoiceAnswerAudioContentType';
 export * from './marketplaceListing';
 export * from './marketplaceListingInput';
 export * from './marketplaceListingInputOriginType';
