@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: marketplace
+    description: Farmer listings, storage points, price guidance, and demo orders
 paths:
   /healthz:
     get:
@@ -24,6 +26,159 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /marketplace/storage-points:
+    get:
+      operationId: listStoragePoints
+      tags: [marketplace]
+      summary: List available regional storage stations
+      responses:
+        "200":
+          description: Active storage stations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StoragePoint"
+  /marketplace/listings:
+    get:
+      operationId: listMarketplaceListings
+      tags: [marketplace]
+      summary: List farmer produce listings
+      responses:
+        "200":
+          description: Active farmer listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MarketplaceListing"
+    post:
+      operationId: createMarketplaceListing
+      tags: [marketplace]
+      summary: Create a farmer produce listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarketplaceListingInput"
+      responses:
+        "201":
+          description: Created farmer listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketplaceListing"
+  /marketplace/listings/{id}:
+    patch:
+      operationId: updateMarketplaceListing
+      tags: [marketplace]
+      summary: Update a farmer produce listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarketplaceListingInput"
+      responses:
+        "200":
+          description: Updated farmer listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketplaceListing"
+        "404":
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+    delete:
+      operationId: deleteMarketplaceListing
+      tags: [marketplace]
+      summary: Delete a farmer produce listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Listing deleted
+        "404":
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /marketplace/price-guidance:
+    get:
+      operationId: getMarketPriceGuidance
+      tags: [marketplace]
+      summary: Compare an asking price with simulated regional retail caps
+      parameters:
+        - name: cropType
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: askingPrice
+          in: query
+          required: true
+          schema:
+            type: number
+            exclusiveMinimum: 0
+        - name: unit
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [kg, quintal, ton]
+        - name: storagePointId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Simulated price comparison
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PriceGuidance"
+        "400":
+          description: Invalid price request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /marketplace/orders:
+    post:
+      operationId: submitDemoOrder
+      tags: [marketplace]
+      summary: Submit a demo marketplace order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DemoOrderInput"
+      responses:
+        "201":
+          description: Demo order recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DemoOrder"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +188,205 @@ components:
           type: string
       required:
         - status
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+    StoragePoint:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        district:
+          type: string
+        state:
+          type: string
+        address:
+          type: string
+        feePerQuintal:
+          type: number
+          minimum: 0
+      required: [id, name, type, district, state, address, feePerQuintal]
+    MarketplaceListing:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cropType:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        unit:
+          type: string
+        quantity:
+          type: number
+        availableQuantity:
+          type: number
+        storagePointId:
+          type: string
+        storagePointName:
+          type: string
+        storagePointDistrict:
+          type: string
+        storagePointState:
+          type: string
+        farmerName:
+          type: string
+        originType:
+          type: string
+          enum: [farm, storage_hub, mandi]
+        originLabel:
+          type: string
+        sellerCredential:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - cropType
+        - description
+        - price
+        - unit
+        - quantity
+        - availableQuantity
+        - storagePointId
+        - storagePointName
+        - storagePointDistrict
+        - storagePointState
+        - farmerName
+        - originType
+        - originLabel
+        - sellerCredential
+        - createdAt
+    MarketplaceListingInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        cropType:
+          type: string
+          minLength: 1
+          maxLength: 80
+        description:
+          type: string
+          maxLength: 500
+        price:
+          type: number
+          exclusiveMinimum: 0
+        unit:
+          type: string
+          enum: [kg, quintal, ton]
+        quantity:
+          type: number
+          exclusiveMinimum: 0
+        storagePointId:
+          type: string
+        farmerName:
+          type: string
+          minLength: 1
+          maxLength: 100
+        originType:
+          type: string
+          enum: [farm, storage_hub, mandi]
+        originLabel:
+          type: string
+          maxLength: 120
+        sellerCredential:
+          type: string
+          maxLength: 200
+      required:
+        - name
+        - cropType
+        - price
+        - unit
+        - quantity
+        - storagePointId
+        - farmerName
+    PriceGuidance:
+      type: object
+      properties:
+        cropType:
+          type: string
+        unit:
+          type: string
+        askingPrice:
+          type: number
+        regionalRetailCap:
+          type: number
+        storageNodeFee:
+          type: number
+        compressionPercent:
+          type: number
+        comparison:
+          type: string
+        sourceLabel:
+          type: string
+      required:
+        - cropType
+        - unit
+        - askingPrice
+        - regionalRetailCap
+        - storageNodeFee
+        - compressionPercent
+        - comparison
+        - sourceLabel
+    DemoOrderLine:
+      type: object
+      properties:
+        productId:
+          type: string
+        name:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+        unitPrice:
+          type: number
+          minimum: 0
+        unit:
+          type: string
+        storagePointName:
+          type: string
+      required: [productId, name, quantity, unitPrice, unit, storagePointName]
+    DemoOrderInput:
+      type: object
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/DemoOrderLine"
+        totalAmount:
+          type: number
+          exclusiveMinimum: 0
+      required: [items, totalAmount]
+    DemoOrder:
+      type: object
+      properties:
+        id:
+          type: string
+        itemCount:
+          type: integer
+        totalAmount:
+          type: number
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, itemCount, totalAmount, status, createdAt]
 

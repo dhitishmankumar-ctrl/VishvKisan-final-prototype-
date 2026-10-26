@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "VishvKisan Marketplace"
+description = "A farmer-to-customer produce marketplace with separate farmer and customer experiences, crop listings, storage guidance, and a clearly labeled demo checkout."
+version = "1.0.0"
+id = "artifacts/vishvkisan"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21894
+
+[services.development]
+run = "pnpm --filter @workspace/vishvkisan run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/vishvkisan", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/vishvkisan/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21894"
+BASE_PATH = "/"
