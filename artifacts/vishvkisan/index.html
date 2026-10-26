@@ -242,7 +242,7 @@ body.role-farmer .customer-only{display:none!important}body.role-customer .farme
     <h1>Good decisions<br>begin <em>in the field.</em></h1>
     <p class="welcome-intro">A marketplace connecting the people who grow our food with the families who buy it — with local produce, weather, crop knowledge and farmer support in one place.</p>
     <div class="welcome-actions"><button class="btn primary" id="enterDashboard">Explore VishvKisan <span>↗</span></button><button class="btn ghost" id="welcomeLogin">Sign in / Register</button></div><div class="role-shortcuts" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><button class="btn ghost" id="farmerEntry">🌱 Farmer Login</button><button class="btn ghost" id="customerEntry">🧺 Customer Login</button></div>
-    <div class="welcome-foot">Designed for farmers and families · Assam, India<br>Prototype preview — sample market data and browser-only profiles are clearly identified.<br>Demo sign-in: use any email formatted like name@gmail.com; it does not need to be a real inbox. No email or SMS is sent. Use code 123456 if prompted.</div>
+    <div class="welcome-foot">Designed for farmers and families · Assam, India<br>Prototype preview — sample market data and browser-only profiles are clearly identified.</div>
   </div>
 </section>
 <div class="app" id="mainApp" hidden>
@@ -568,7 +568,25 @@ loadWeather('Guwahati');
 function openRoleFlow(role){
   const roleLabel=role==='farmer'?'Farmer':'Customer';
   const intro=role==='farmer'?'Create wholesale crop batches, assign regional storage hubs, and compare price compression efficiency.':'Discover fresh produce, compare listings, save favourites and manage your orders.';
-  modal(`${roleLabel} ${localStorage.getItem('vk_role')?'Workspace':'Login / Register'}`,`<div class="role-auth-card"><div style="font-size:34px;margin-bottom:8px">${role==='farmer'?'🌱':'🧺'}</div><h3 style="margin:0 0 6px">Continue as ${roleLabel}</h3><p>${intro}</p><div class="field" style="margin-top:16px"><label for="vkAuthEmail">Email address</label><input id="vkAuthEmail" type="email" placeholder="you@example.com" autocomplete="email" required></div><button class="btn green" style="margin-top:12px;width:100%" id="vkSendOtp">Send sign-in code</button><p class="subtle" style="margin-top:10px">Authentication setup status: demo mode. No email/SMS will be sent until a secure backend and OTP provider are configured.</p><div id="vkOtpArea"></div><button class="btn ghost" style="margin-top:10px;width:100%" id="vkExploreRole">Explore without signing in</button></div>`);
+  modal(
+    `${roleLabel} ${localStorage.getItem('vk_role') ? 'Workspace' : 'Login / Register'}`,
+    `<div class="role-auth-card">
+      <div style="font-size:34px;margin-bottom:8px">${role === 'farmer' ? '🌱' : '🧺'}</div>
+      <h3 style="margin:0 0 6px">Continue as ${roleLabel}</h3>
+      <p>${intro}</p>
+      <div class="field" style="margin-top:16px">
+        <label for="vkAuthEmail">Email address</label>
+        <input id="vkAuthEmail" type="email" placeholder="you@example.com" autocomplete="email" required>
+      </div>
+      <p class="subtle" style="margin:8px 0 0;font-size:11px">
+        Demo sign-in: use any email formatted like <strong>name@gmail.com</strong>. It does not need to be a real inbox.
+      </p>
+      <button class="btn green" style="margin-top:12px;width:100%" id="vkSendOtp">Send sign-in code</button>
+      <p class="subtle" style="margin-top:10px">Authentication setup status: demo mode. No email/SMS will be sent until a secure backend and OTP provider are configured.</p>
+      <div id="vkOtpArea"></div>
+      <button class="btn ghost" style="margin-top:10px;width:100%" id="vkExploreRole">Explore without signing in</button>
+    </div>`,
+  );
   $('#vkExploreRole').addEventListener('click',()=>enterRole(role));
   $('#vkSendOtp').addEventListener('click',()=>{const email=$('#vkAuthEmail').value.trim();if(!/^\S+@\S+\.\S+$/.test(email)){toast('Enter a valid email address');return;}$('#vkOtpArea').innerHTML='<div class="field" style="margin-top:12px"><label for="vkOtpCode">Demo verification code</label><input id="vkOtpCode" inputmode="numeric" maxlength="6" placeholder="Enter demo code 123456"></div><button class="btn primary" style="margin-top:10px;width:100%" id="vkVerifyOtp">Verify demo code</button><p class="subtle">For preview only, use 123456. This is not real OTP verification.</p>';$('#vkVerifyOtp').addEventListener('click',()=>{if($('#vkOtpCode').value==='123456'){localStorage.setItem('vk_demo_email',email);enterRole(role)}else toast('Incorrect demo code. Use 123456.');});});
 }
