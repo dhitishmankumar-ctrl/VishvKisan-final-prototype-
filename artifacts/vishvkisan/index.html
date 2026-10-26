@@ -270,6 +270,7 @@ body.role-farmer .customer-only{display:none!important}body.role-customer .farme
     <button data-page="market"><span>◈</span> Mandi & Market</button>
     <button data-page="profit"><span>₹</span> Profit Calculator</button>
     <button data-page="farmtools"><span>✦</span> Smart Farm Tools</button>
+    <button data-page="safety"><span>🛡</span> Pesticide Safety</button>
     <button data-page="orders"><span>▣</span> Orders & Bulk Buying</button>
     <button data-page="community"><span>♧</span> Kisan Community</button>
     <button data-page="schemes"><span>▤</span> Government schemes</button>
@@ -490,6 +491,29 @@ body.role-farmer .customer-only{display:none!important}body.role-customer .farme
     </div>
   </section>
 
+  <section class="content" id="page-safety">
+    <div class="section-head"><div><h3>Pesticide Safety & WHO Guidance</h3><p>Role-specific safety reminders for your VishvKisan workspace.</p></div></div>
+    <div class="farmer-only">
+      <section class="pesticide-safety" aria-label="Farmer pesticide safety guidance">
+        <div class="pesticide-safety-head"><span class="pesticide-safety-icon" aria-hidden="true">🛡️</span><div><span class="pesticide-safety-kicker">WHO + FAO safety guidance</span><h4>Protect your field team & harvest</h4></div></div>
+        <div class="pesticide-safety-list">
+          <div class="pesticide-safety-item"><span class="pesticide-safety-check" aria-hidden="true">✓</span><p><strong>Check the label first.</strong> Use only products registered for the crop and pest; follow label directions, protective equipment, and re-entry and harvest intervals.</p></div>
+          <div class="pesticide-safety-item"><span class="pesticide-safety-check" aria-hidden="true">✓</span><p><strong>Reduce exposure.</strong> Keep people and animals away during use; protect nearby water and follow the label for storage and disposal.</p></div>
+        </div>
+        <p class="pesticide-safety-source">WHO/FAO guidance supports safer pesticide management; it is not a substitute for your local law or the product label. <a href="https://www.who.int/publications/i/item/9789240053014" target="_blank" rel="noopener noreferrer">Read WHO/FAO label guidance ↗</a></p>
+      </section>
+    </div>
+    <div class="customer-only">
+      <section class="pesticide-safety" aria-label="Customer pesticide-aware shopping guidance">
+        <div class="pesticide-safety-head"><span class="pesticide-safety-icon" aria-hidden="true">🥬</span><div><span class="pesticide-safety-kicker">WHO food-safety guidance</span><h4>Shop with clear, informed questions</h4></div></div>
+        <div class="pesticide-safety-list">
+          <div class="pesticide-safety-item"><span class="pesticide-safety-check" aria-hidden="true">✓</span><p><strong>Ask about traceability.</strong> If you have questions, ask the seller about crop-protection use and whether the label harvest interval was followed.</p></div>
+          <div class="pesticide-safety-item"><span class="pesticide-safety-check" aria-hidden="true">✓</span><p><strong>Know what a listing can’t prove.</strong> Appearance does not confirm residue levels; this marketplace does not test or certify produce.</p></div>
+        </div>
+        <p class="pesticide-safety-source">WHO explains how pesticide-residue risk is assessed; national authorities enforce food-residue limits. <a href="https://www.who.int/news-room/fact-sheets/detail/pesticide-residues-in-food" target="_blank" rel="noopener noreferrer">Read WHO food-safety guidance ↗</a></p>
+      </section>
+    </div>
+  </section>
 </main>
 </div>
 <nav class="mobile-nav" aria-label="Mobile navigation"><button class="active" data-page="home"><span>⌂</span>Home</button><button data-page="weather"><span>☼</span>Weather</button><button data-page="market"><span>◈</span>Market</button><button data-page="community"><span>♧</span>Community</button><button type="button" id="mobileMoreBtn" aria-label="More options"><span>⋯</span>More</button></nav>
@@ -501,10 +525,10 @@ const toast=(msg)=>{const el=$('#toast');el.textContent=msg;el.classList.add('sh
 function modal(title,body){$('#modalTitle').textContent=title;$('#modalBody').innerHTML=body;$('#modal').classList.add('open')}
 function closeModal(){$('#modal').classList.remove('open')}
 $('#modalClose').addEventListener('click',closeModal);$('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
-const pages={home:['Good morning, Kisan.','A better day starts in the field'],weather:['Weather & field planning','Plan with local conditions'],market:['Mandi & market watch','Make informed selling decisions'],profit:['Farmer Profit Calculator','Estimate revenue and selling costs'],farmtools:['Smart Farm Tools','Market comparisons and crop guidance'],orders:['Orders & Bulk Buying','Track demo orders and create bulk requests'],community:['Kisan Community','Knowledge grows when it is shared'],schemes:['Government scheme guide','Find trusted starting points'],profile:['My farm profile','Your farm, your preferences'],licenses:['Licences & farmer e-Card','Keep your farm documents organised']};
+const pages={home:['Good morning, Kisan.','A better day starts in the field'],weather:['Weather & field planning','Plan with local conditions'],market:['Mandi & market watch','Make informed selling decisions'],profit:['Farmer Profit Calculator','Estimate revenue and selling costs'],farmtools:['Smart Farm Tools','Market comparisons and crop guidance'],safety:['Pesticide Safety & WHO Guidance','Use role-specific safety guidance and official references'],orders:['Orders & Bulk Buying','Track demo orders and create bulk requests'],community:['Kisan Community','Knowledge grows when it is shared'],schemes:['Government scheme guide','Find trusted starting points'],profile:['My farm profile','Your farm, your preferences'],licenses:['Licences & farmer e-Card','Keep your farm documents organised']};
 function go(page){$$('.content').forEach(x=>x.classList.toggle('active',x.id==='page-'+page));$$('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));$('#pageTitle').textContent=pages[page][0];$('#dateLabel').textContent=pages[page][1];window.scrollTo({top:0,behavior:'smooth'});if(page==='weather'&&!window.weatherLoaded)loadWeather('Guwahati')}
 $$('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));$$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
-$('#mobileMoreBtn')?.addEventListener('click',()=>{modal('More options',`<div class="grid-two" style="grid-template-columns:1fr;gap:10px"><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="farmtools">✦ Smart Farm Tools</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="orders">▣ Orders & Bulk Buying</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="schemes">▤ Government Schemes</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="licenses">▣ Licences & Farmer e-Card</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="profile">♙ My Farm Profile</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" id="mobileLanguageBtn">文 Language preferences</button></div>`);$('#modalBody').querySelectorAll('[data-more-page]').forEach(b=>b.addEventListener('click',()=>{const page=b.dataset.morePage;closeModal();go(page)}));$('#mobileLanguageBtn')?.addEventListener('click',()=>{closeModal();$('#languageBtn')?.click()})});
+$('#mobileMoreBtn')?.addEventListener('click',()=>{modal('More options',`<div class="grid-two" style="grid-template-columns:1fr;gap:10px"><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="farmtools">✦ Smart Farm Tools</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="safety">🛡 Pesticide Safety & WHO Guidance</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="orders">▣ Orders & Bulk Buying</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="schemes">▤ Government Schemes</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="licenses">▣ Licences & Farmer e-Card</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" data-more-page="profile">♙ My Farm Profile</button><button class="btn ghost" style="color:var(--ink);border:1px solid var(--line);justify-content:flex-start" id="mobileLanguageBtn">文 Language preferences</button></div>`);$('#modalBody').querySelectorAll('[data-more-page]').forEach(b=>b.addEventListener('click',()=>{const page=b.dataset.morePage;closeModal();go(page)}));$('#mobileLanguageBtn')?.addEventListener('click',()=>{closeModal();$('#languageBtn')?.click()})});
 const crops=[
 {name:'Tomatoes',category:'Vegetables',emoji:'🍅',price:'₹17/kg',note:'Illustrative example',color:'#f8e5d8'},
 {name:'Potatoes',category:'Vegetables',emoji:'🥔',price:'₹23/kg',note:'Illustrative example',color:'#eee4d1'},
@@ -582,30 +606,12 @@ loadWeather('Guwahati');
 function openRoleFlow(role){
   const roleLabel=role==='farmer'?'Farmer':'Customer';
   const intro=role==='farmer'?'Create wholesale crop batches, assign regional storage hubs, and compare price compression efficiency.':'Discover fresh produce, compare listings, save favourites and manage your orders.';
-  const safetyCard=role==='farmer'
-    ? `<section class="pesticide-safety" aria-label="Farmer pesticide safety guidance">
-        <div class="pesticide-safety-head"><span class="pesticide-safety-icon" aria-hidden="true">🛡️</span><div><span class="pesticide-safety-kicker">WHO + FAO safety guidance</span><h4>Protect your field team & harvest</h4></div></div>
-        <div class="pesticide-safety-list">
-          <div class="pesticide-safety-item"><span class="pesticide-safety-check" aria-hidden="true">✓</span><p><strong>Check the label first.</strong> Use only products registered for the crop and pest; follow label directions, protective equipment, and re-entry and harvest intervals.</p></div>
-          <div class="pesticide-safety-item"><span class="pesticide-safety-check" aria-hidden="true">✓</span><p><strong>Reduce exposure.</strong> Keep people and animals away during use; protect nearby water and follow the label for storage and disposal.</p></div>
-        </div>
-        <p class="pesticide-safety-source">WHO/FAO guidance supports safer pesticide management; it is not a substitute for your local law or the product label. <a href="https://www.who.int/publications/i/item/9789240053014" target="_blank" rel="noopener noreferrer">Read WHO/FAO label guidance ↗</a></p>
-      </section>`
-    : `<section class="pesticide-safety" aria-label="Customer pesticide-aware shopping guidance">
-        <div class="pesticide-safety-head"><span class="pesticide-safety-icon" aria-hidden="true">🥬</span><div><span class="pesticide-safety-kicker">WHO food-safety guidance</span><h4>Shop with clear, informed questions</h4></div></div>
-        <div class="pesticide-safety-list">
-          <div class="pesticide-safety-item"><span class="pesticide-safety-check" aria-hidden="true">✓</span><p><strong>Ask about traceability.</strong> If you have questions, ask the seller about crop-protection use and whether the label harvest interval was followed.</p></div>
-          <div class="pesticide-safety-item"><span class="pesticide-safety-check" aria-hidden="true">✓</span><p><strong>Know what a listing can’t prove.</strong> Appearance does not confirm residue levels; this marketplace does not test or certify produce.</p></div>
-        </div>
-        <p class="pesticide-safety-source">WHO explains how pesticide-residue risk is assessed; national authorities enforce food-residue limits. <a href="https://www.who.int/news-room/fact-sheets/detail/pesticide-residues-in-food" target="_blank" rel="noopener noreferrer">Read WHO food-safety guidance ↗</a></p>
-      </section>`;
   modal(
     `${roleLabel} ${localStorage.getItem('vk_role') ? 'Workspace' : 'Login / Register'}`,
     `<div class="role-auth-card">
       <div style="font-size:34px;margin-bottom:8px">${role === 'farmer' ? '🌱' : '🧺'}</div>
       <h3 style="margin:0 0 6px">Continue as ${roleLabel}</h3>
       <p>${intro}</p>
-      ${safetyCard}
       <div class="field" style="margin-top:16px">
         <label for="vkAuthEmail">Email address</label>
         <input id="vkAuthEmail" type="email" placeholder="you@example.com" autocomplete="email" required>
