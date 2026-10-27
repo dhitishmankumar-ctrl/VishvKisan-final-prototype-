@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VishvKisan — Technical Design Document</title>
+<style>
+:root{--dark:#17272b;--green:#2f7d32;--lime:#9ad64d;--pale:#eef6e8;--light:#f5f7f5;--ink:#263538;--muted:#56666a;--orange:#d97706;--red:#b9382f;--line:#d1ddd3}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#e9efea;color:var(--ink);font:16px/1.55 Arial,Helvetica,sans-serif}
+header{background:var(--dark);color:#fff;padding:44px 22px;text-align:center;border-bottom:7px solid var(--green)}
+header .logo{font-size:13px;letter-spacing:.22em;color:var(--lime);font-weight:700}header h1{font-size:clamp(30px,5vw,48px);line-height:1.1;margin:12px 0}header h2{font-size:clamp(20px,3vw,29px);margin:0;color:#fff}header p{color:#e4f3e5;margin:12px auto 0;max-width:780px}
+nav{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+nav a{font-size:13px;color:var(--green);text-decoration:none;font-weight:700;padding:6px 9px;border-radius:6px}nav a:hover{background:var(--pale)}
+main{max-width:1100px;margin:22px auto;padding:0 16px}.page{background:#fff;border:1px solid var(--line);border-radius:14px;padding:clamp(18px,3vw,34px);margin:0 0 22px;box-shadow:0 5px 18px #17272b0b}
+h2{color:var(--green);font-size:25px;line-height:1.2;margin:0 0 14px}h3{font-size:17px;color:var(--dark);margin:22px 0 8px}p{margin:8px 0 12px}ul{padding-left:22px}li{margin:5px 0}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:22px}.meta div{background:#24383c;color:#fff;border-radius:8px;padding:12px;overflow-wrap:anywhere}.meta strong{color:var(--lime)}
+.notice{background:var(--pale);border-left:5px solid var(--green);padding:12px 15px;border-radius:6px;margin:14px 0;font-weight:600}
+table{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:14px}th{background:var(--green);color:#fff;text-align:left}th,td{border:1px solid var(--line);padding:9px 10px;vertical-align:top}tbody tr:nth-child(even){background:var(--light)}
+.diagram{width:100%;overflow-x:auto;margin:12px 0 18px;border:1px solid var(--line);border-radius:10px;background:#fbfdfb;padding:12px}.diagram svg{display:block;width:100%;min-width:680px;height:auto}.caption{font-size:12px;color:var(--muted);font-style:italic;margin-top:4px}
+code{background:#edf3ee;padding:2px 5px;border-radius:4px}footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
+@media print{body{background:#fff;font-size:11pt}nav{display:none}main{max-width:none;margin:0;padding:0}.page{box-shadow:none;border:0;border-radius:0;margin:0;padding:18mm 15mm;break-after:page}.page:last-child{break-after:auto}header{break-after:page}.diagram{overflow:visible}.diagram svg{min-width:0}a{color:inherit;text-decoration:none}table{font-size:9pt}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">TEAM DIGIKISAN</div>
+  <h1>VISHVKISAN</h1>
+  <h2>Technical Design Document</h2>
+  <p>System Architecture • Modules • Data Flow • Security • Public–Private Partnership (PPP) Model</p>
+  <p><strong>From Fields to Families</strong><br>A Digital Bridge for Indian Agriculture</p>
+</header>
+<nav>
+<a href="#overview">Overview</a><a href="#technology">Technology & Modules</a><a href="#architecture">Architecture</a><a href="#journeys">User Journeys</a><a href="#security">Security & Safety</a><a href="#ppp">PPP Model</a><a href="#roadmap">Roadmap & KPIs</a><a href="#references">References</a>
+</nav>
+<main>
+<section class="page" id="overview">
+<h2>Project Information</h2>
+<div class="meta">
+<div><strong>Project</strong><br>VishvKisan — digital agricultural marketplace prototype</div>
+<div><strong>Team</strong><br>Team DigiKisan</div>
+<div><strong>Theme</strong><br>Rural Development &amp; Livelihoods</div>
+<div><strong>GitHub Repository</strong><br><a href="https://github.com/dhitishmankumar-ctrl/VishvKisan-final-prototype-">VishvKisan-final-prototype-</a></div>
+<div><strong>Demonstration Prototype</strong><br><a href="https://vishv-kisan-showcase--dhritishmankuma.replit.app">Open VishvKisan prototype</a></div>
+</div>
+<div class="notice">Implementation status: This document distinguishes the current demonstration prototype from planned integrations and proposed real-world operations. It does not certify that every feature, security control, partnership, budget or outcome is live or approved.</div>
+<h2>1. Project Overview</h2>
+<p>VishvKisan is a web-based agricultural marketplace prototype intended to connect farmers with customers and bring selected agricultural information and tools into one digital experience. It focuses on market access, price awareness, farming information, government-scheme awareness, community learning and responsible pesticide-use education.</p>
+<h3>1.1 Problem statement</h3>
+<ul>
+<li><strong>Farmer income and market access:</strong> intermediaries and limited direct-buyer access can reduce the share farmers receive; farmers may sell at low prices while consumers pay substantially more.</li>
+<li><strong>Price transparency:</strong> farmers may lack timely, comparable market-price information for informed selling decisions.</li>
+<li><strong>Government schemes:</strong> information about schemes, eligibility, subsidies and applications can be fragmented or difficult to access.</li>
+<li><strong>Post-harvest losses:</strong> gaps in collection, storage, cold-chain access, packaging and transport can damage produce or limit market reach.</li>
+<li><strong>Digital and knowledge barriers:</strong> language, digital literacy and fragmented information can make online services difficult to use.</li>
+<li><strong>Consumer transparency and safety:</strong> buyers may want clearer information about produce origin, quality and responsible pesticide practices.</li>
+</ul>
+<h3>1.2 Objectives</h3>
+<ul><li>Provide a digital place to showcase produce and explore customer demand.</li><li>Make displayed prices and simple profit estimates easier to compare.</li><li>Bring crop, weather, farming, scheme and pesticide-safety information together.</li><li>Design for rural users and future regional-language accessibility.</li><li>Define a pathway from prototype to a measured Assam pilot.</li></ul>
+<div class="notice">Scope and limitations: The current deliverable is a demonstration prototype. Production-grade authentication, persistent database, live market/weather feeds, payments, official farmer verification, fulfilment logistics and government/private partnerships must be confirmed, implemented and tested before being described as operational.</div>
+</section>
+
+<section class="page" id="technology">
+<h2>2. Technology Stack and Prototype Modules</h2>
+<table><thead><tr><th>Technology / area</th><th>Role</th><th>Implementation note</th></tr></thead><tbody>
+<tr><td>HTML</td><td>Web structure</td><td>Provides structure for interface pages.</td></tr>
+<tr><td>CSS</td><td>Styling / layout</td><td>Visual presentation and responsive styling where implemented.</td></tr>
+<tr><td>JavaScript</td><td>Client interactions</td><td>Supports interactive behaviour where implemented.</td></tr>
+<tr><td>TypeScript</td><td>Typed application code</td><td>Present in repository; exact usage should be checked module by module.</td></tr>
+<tr><td>pnpm workspace</td><td>Package management</td><td>Consult workspace files and manifests for exact setup commands.</td></tr>
+<tr><td>GitHub / Replit</td><td>Source control and development/deployment workflow</td><td>Supplied repository and hosted prototype links.</td></tr>
+</tbody></table>
+<h3>2.1 Main modules</h3>
+<table><thead><tr><th>Module</th><th>Purpose</th><th>Status caveat</th></tr></thead><tbody>
+<tr><td>Farmer workspace</td><td>Farmer tools, listing management and profit calculator where implemented.</td><td>Test each action in the live prototype.</td></tr>
+<tr><td>Customer marketplace</td><td>Browse produce, inspect details, search/compare displayed prices and explore order flows.</td><td>Listings may be demo data; verify search and order behaviour.</td></tr>
+<tr><td>Price / profit tools</td><td>Compare displayed prices and estimate selling outcomes.</td><td>Do not call external prices live unless verified.</td></tr>
+<tr><td>Crop / weather</td><td>Crop information, farming tips and weather-related guidance.</td><td>Live feeds need integration and validation.</td></tr>
+<tr><td>Government schemes</td><td>Scheme awareness and information for further checking.</td><td>Verify eligibility and current status with official sources.</td></tr>
+<tr><td>Farmer licence / e-card</td><td>Concept for farmer details and a possible verification workflow.</td><td>A prototype badge is not official verification.</td></tr>
+<tr><td>Pesticide safety</td><td>Responsible-use awareness and safer farming practices.</td><td>No residue-free claims without appropriate testing.</td></tr>
+<tr><td>Community / orders</td><td>Knowledge-sharing concepts and demonstration order flows.</td><td>Real fulfilment requires backend and operations.</td></tr>
+</tbody></table>
+<div class="notice">Repository hygiene: verify setup commands from the actual manifests, keep API keys/passwords out of GitHub, and document environment-variable names without publishing secret values.</div>
+</section>
+
+<section class="page" id="architecture">
+<h2>3. System Architecture</h2>
+<p>This conceptual diagram separates the user-facing prototype from data, integrations and security capabilities that may need further implementation. It is not proof that every layer is deployed.</p>
+<div class="diagram">
+<svg viewBox="0 0 900 510" role="img" aria-label="VishvKisan technical architecture diagram">
+<defs><marker id="arrA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2f7d32"/></marker></defs>
+<g font-family="Arial" fill="#17272b" text-anchor="middle">
+<rect x="30" y="25" width="235" height="62" rx="10" fill="#eef6e8" stroke="#2f7d32" stroke-width="2"/><text x="147" y="50" font-weight="bold" font-size="18">Farmers</text><text x="147" y="72" font-size="14">Listings • farm tools</text>
+<rect x="635" y="25" width="235" height="62" rx="10" fill="#eef6e8" stroke="#2f7d32" stroke-width="2"/><text x="752" y="50" font-weight="bold" font-size="18">Customers</text><text x="752" y="72" font-size="14">Browse • compare</text>
+<rect x="310" y="120" width="280" height="66" rx="10" fill="#dce8de" stroke="#2f7d32" stroke-width="2"/><text x="450" y="147" font-weight="bold" font-size="18">VishvKisan Web UI</text><text x="450" y="170" font-size="14">HTML • CSS • JavaScript / TypeScript</text>
+<path d="M147 87 L147 102 L370 102 L370 120" fill="none" stroke="#2f7d32" stroke-width="2" marker-end="url(#arrA)"/><path d="M752 87 L752 102 L530 102 L530 120" fill="none" stroke="#2f7d32" stroke-width="2" marker-end="url(#arrA)"/>
+<rect x="25" y="225" width="245" height="74" rx="10" fill="#fff" stroke="#2f7d32" stroke-width="2"/><text x="147" y="252" font-weight="bold" font-size="17">Marketplace</text><text x="147" y="275" font-size="14">Listings • demonstration orders</text>
+<rect x="327" y="225" width="246" height="74" rx="10" fill="#fff" stroke="#2f7d32" stroke-width="2"/><text x="450" y="252" font-weight="bold" font-size="17">Farm tools</text><text x="450" y="275" font-size="14">Price • profit • weather</text>
+<rect x="605" y="225" width="270" height="74" rx="10" fill="#fff" stroke="#2f7d32" stroke-width="2"/><text x="740" y="252" font-weight="bold" font-size="17">Information</text><text x="740" y="275" font-size="14">Schemes • pesticide safety</text>
+<path d="M450 186 L450 205 L147 205 L147 225" fill="none" stroke="#2f7d32" stroke-width="2" marker-end="url(#arrA)"/><path d="M450 186 L450 225" stroke="#2f7d32" stroke-width="2" marker-end="url(#arrA)"/><path d="M450 205 L740 205 L740 225" fill="none" stroke="#2f7d32" stroke-width="2" marker-end="url(#arrA)"/>
+<rect x="22" y="360" width="250" height="65" rx="10" fill="#fff4db" stroke="#d97706" stroke-width="2"/><text x="147" y="386" font-weight="bold" font-size="17">Demo data</text><text x="147" y="408" font-size="14">Current behaviour to verify</text>
+<rect x="325" y="360" width="250" height="65" rx="10" fill="#fce8e6" stroke="#b9382f" stroke-width="2"/><text x="450" y="386" font-weight="bold" font-size="17">Planned services</text><text x="450" y="408" font-size="14">Database • external APIs</text>
+<rect x="628" y="360" width="250" height="65" rx="10" fill="#fce8e6" stroke="#b9382f" stroke-width="2"/><text x="753" y="386" font-weight="bold" font-size="17">Security</text><text x="753" y="408" font-size="14">Authentication • privacy</text>
+<path d="M147 299 L147 360" stroke="#2f7d32" stroke-dasharray="6 5" stroke-width="2" marker-end="url(#arrA)"/><path d="M450 299 L450 360" stroke="#2f7d32" stroke-dasharray="6 5" stroke-width="2" marker-end="url(#arrA)"/><path d="M740 299 L740 360" stroke="#2f7d32" stroke-dasharray="6 5" stroke-width="2" marker-end="url(#arrA)"/>
+<text x="450" y="475" fill="#56666a" font-size="14" font-style="italic">Conceptual architecture; planned components are not live integrations.</text>
+</g></svg></div>
+<h3>3.1 Architecture layers</h3>
+<table><thead><tr><th>Layer</th><th>Responsibility</th><th>Verification required</th></tr></thead><tbody>
+<tr><td>Users</td><td>Farmers and customers; admin roles are proposed if needed.</td><td>Confirm actual account roles and controls.</td></tr>
+<tr><td>Web interface</td><td>Marketplace, farmer tools, information modules and navigation.</td><td>Test responsive layout, accessibility and navigation.</td></tr>
+<tr><td>Application modules</td><td>Listings, price display, profit calculation, information and demo order flows.</td><td>Test validation, edge cases and calculations.</td></tr>
+<tr><td>Data layer</td><td>Potential user, listing, order and information records.</td><td>Confirm local/demo versus persistent storage.</td></tr>
+<tr><td>External services</td><td>Potential weather, market, government info, maps and payment providers.</td><td>Mark planned unless integrated and tested.</td></tr>
+<tr><td>Security</td><td>Authentication, access control, privacy, audit and verification procedures.</td><td>Production controls require review.</td></tr>
+</tbody></table>
+<h3>3.2 Future production architecture</h3>
+<p>A production version would separate the web client, API/application services, persistent database, third-party integrations and operational administration. Access should be role-based, sensitive data minimised, and integration failures handled safely.</p>
+</section>
+
+<section class="page" id="journeys">
+<h2>4. User Journeys and Data Flow</h2>
+<h3>4.1 Farmer journey</h3><ul><li>Open the platform and choose the farmer workspace.</li><li>Explore tools and review displayed information.</li><li>Create or update a produce listing where implemented.</li><li>Review price information and use the profit calculator if available.</li><li>Manage listing/order details and provide feedback according to current prototype behaviour.</li></ul>
+<h3>4.2 Customer journey</h3><ul><li>Open the customer marketplace.</li><li>Browse/search produce and review product information.</li><li>Compare displayed prices and product details.</li><li>Use the available order action; call it a demonstration flow if no live order backend exists.</li><li>Provide feedback on usability, trust and product-information clarity.</li></ul>
+<h3>4.3 Proposed farm-to-customer logistics</h3>
+<div class="diagram"><svg viewBox="0 0 1000 185" role="img" aria-label="Farm to customer logistics flowchart"><defs><marker id="arrB" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2f7d32"/></marker></defs><g font-family="Arial" text-anchor="middle" fill="#17272b">
+<g><rect x="10" y="28" width="175" height="75" rx="9" fill="#eef6e8" stroke="#2f7d32" stroke-width="2"/><text x="97" y="57" font-size="17" font-weight="bold">1. Farmer / FPO</text><text x="97" y="81" font-size="14">Lists / supplies produce</text></g>
+<g><rect x="210" y="28" width="175" height="75" rx="9" fill="#eef6e8" stroke="#2f7d32" stroke-width="2"/><text x="297" y="57" font-size="17" font-weight="bold">2. Collection</text><text x="297" y="81" font-size="14">Aggregation / quality check</text></g>
+<g><rect x="410" y="28" width="175" height="75" rx="9" fill="#fff4db" stroke="#d97706" stroke-width="2"/><text x="497" y="57" font-size="17" font-weight="bold">3. Storage</text><text x="497" y="81" font-size="14">Cold chain if needed</text></g>
+<g><rect x="610" y="28" width="175" height="75" rx="9" fill="#fff4db" stroke="#d97706" stroke-width="2"/><text x="697" y="57" font-size="17" font-weight="bold">4. Packing</text><text x="697" y="81" font-size="14">Sorting / packaging</text></g>
+<g><rect x="810" y="28" width="175" height="75" rx="9" fill="#eef6e8" stroke="#2f7d32" stroke-width="2"/><text x="897" y="57" font-size="17" font-weight="bold">5. Customer</text><text x="897" y="81" font-size="14">Local delivery / pickup</text></g>
+<path d="M185 65 H210 M385 65 H410 M585 65 H610 M785 65 H810" fill="none" stroke="#2f7d32" stroke-width="2.5" marker-end="url(#arrB)"/>
+<text x="500" y="145" font-size="14" fill="#56666a" font-style="italic">Proposed logistics workflow — operational partners and facilities still need to be established.</text>
+</g></svg></div>
+<p>Proposed sequence: farmer/FPO supply → collection and aggregation → quality check → storage/cold chain where needed → sorting and packing → local delivery partner or pickup → customer. Each stage requires partners, service standards, cost estimates and responsibility allocation.</p>
+<h3>4.4 Data-flow considerations</h3><ul><li>Product listings should include only necessary information.</li><li>External price comparisons should identify source, unit, location and date.</li><li>Order records must distinguish simulated orders from confirmed real transactions.</li><li>Weather, scheme and crop information should include source and freshness checks where possible.</li><li>Administrative changes to verified records should be auditable in a production system.</li></ul>
+</section>
+
+<section class="page" id="security">
+<h2>5. Security, Privacy and Food Safety</h2>
+<table><thead><tr><th>Area</th><th>Recommended control</th><th>Status</th></tr></thead><tbody>
+<tr><td>Authentication</td><td>Use tested authentication; protect account recovery and apply appropriate roles.</td><td>Implement/test before production.</td></tr>
+<tr><td>Data minimisation</td><td>Collect only needed information and explain why it is collected.</td><td>Policy and implementation required.</td></tr>
+<tr><td>Transport/storage</td><td>Use secure transport, restrict database access and protect stored personal data.</td><td>Validate before real user data.</td></tr>
+<tr><td>Payments</td><td>Use compliant payment provider; never store payment credentials directly.</td><td>Planned unless tested.</td></tr>
+<tr><td>Farmer verification</td><td>Define authorised verifier, evidence, renewal, corrections and dispute handling.</td><td>Proposed; requires partner.</td></tr>
+<tr><td>Audit/reporting</td><td>Log administrative actions and provide reporting for inaccurate listings.</td><td>Process to define.</td></tr>
+</tbody></table>
+<h3>5.1 Responsible pesticide-use information</h3>
+<div class="notice">The platform can share awareness about label directions, appropriate use, training, integrated pest management concepts and harvest waiting periods using authoritative agricultural guidance. Farmer identity verification alone does not prove produce is pesticide-free or residue-free; such claims require defined testing and verification.</div>
+<h3>5.2 Testing checklist</h3><ul><li>Confirm pages load and navigation works.</li><li>Test desktop/mobile layouts, listings, search, filters, price displays and product details.</li><li>Test forms, validation, empty states, error messages and calculations.</li><li>Verify external links and data freshness where integrations exist.</li><li>Clearly label demo orders and sample prices.</li><li>Test access control and privacy before collecting real user data.</li><li>Validate pesticide-safety content against authoritative agricultural guidance.</li></ul>
+</section>
+
+<section class="page" id="ppp">
+<h2>6. Proposed Public–Private Partnership (PPP) Model</h2>
+<div class="notice">This is a proposed operating arrangement, not evidence of an approved government agreement. It requires partner selection, legal review, funding approval, procurement/compliance review and a signed agreement.</div>
+<div class="diagram">
+<svg viewBox="0 0 1000 650" role="img" aria-label="VishvKisan PPP model diagram">
+<defs><marker id="arrC" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2f7d32"/></marker></defs>
+<g font-family="Arial" fill="#17272b" text-anchor="middle">
+<rect x="325" y="22" width="350" height="80" rx="12" fill="#dce8de" stroke="#2f7d32" stroke-width="2.5"/>
+<text x="500" y="52" font-size="21" font-weight="bold">PROPOSED PPP PARTNERSHIP</text><text x="500" y="78" font-size="16">Public oversight + private operations</text>
+<rect x="30" y="155" width="330" height="118" rx="10" fill="#eef6e8" stroke="#2f7d32" stroke-width="2"/><text x="195" y="184" font-size="19" font-weight="bold">Government / authorities</text><text x="195" y="211" font-size="15">Policy • oversight</text><text x="195" y="234" font-size="15">Scheme coordination</text><text x="195" y="257" font-size="15">Proposed pilot support</text>
+<rect x="640" y="155" width="330" height="118" rx="10" fill="#eef6e8" stroke="#2f7d32" stroke-width="2"/><text x="805" y="184" font-size="19" font-weight="bold">Private tech / operator</text><text x="805" y="211" font-size="15">Build • maintain</text><text x="805" y="234" font-size="15">Daily operations</text><text x="805" y="257" font-size="15">User support</text>
+<path d="M195 155 L195 126 L395 126 L395 102 M805 155 L805 126 L605 126 L605 102" fill="none" stroke="#2f7d32" stroke-width="2.5" marker-end="url(#arrC)"/>
+<rect x="350" y="160" width="300" height="90" rx="10" fill="#fff" stroke="#2f7d32" stroke-width="2"/><text x="500" y="191" font-size="20" font-weight="bold">VishvKisan platform</text><text x="500" y="216" font-size="15">Marketplace • tools</text><text x="500" y="237" font-size="15">Schemes • safety information</text>
+<path d="M500 102 V160" stroke="#2f7d32" stroke-width="2.5" marker-end="url(#arrC)"/>
+<rect x="30" y="340" width="330" height="100" rx="10" fill="#fff4db" stroke="#d97706" stroke-width="2"/><text x="195" y="371" font-size="19" font-weight="bold">Farmers / FPOs</text><text x="195" y="398" font-size="15">List produce</text><text x="195" y="420" font-size="15">Feedback • participation</text>
+<rect x="640" y="340" width="330" height="100" rx="10" fill="#fff4db" stroke="#d97706" stroke-width="2"/><text x="805" y="371" font-size="19" font-weight="bold">Customers</text><text x="805" y="398" font-size="15">Browse • compare</text><text x="805" y="420" font-size="15">Order flow • feedback</text>
+<path d="M195 273 V340 M805 273 V340" stroke="#2f7d32" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrC)"/>
+<path d="M360 390 H410 L450 250 M640 390 H590 L550 250" fill="none" stroke="#2f7d32" stroke-width="2.5" marker-end="url(#arrC)"/>
+<rect x="250" y="490" width="500" height="85" rx="12" fill="#eef6e8" stroke="#2f7d32" stroke-width="2.5"/>
+<text x="500" y="520" font-size="20" font-weight="bold">Proposed financial terms</text><text x="500" y="548" font-size="17">60% profit to Government • 40% operational costs</text>
+<text x="500" y="615" font-size="15" fill="#56666a" font-style="italic">Proposal only; requires approval, legal review and a signed agreement.</text>
+</g></svg>
+</div>
+<h3>6.1 Proposed roles</h3>
+<table><thead><tr><th>Participant</th><th>Proposed responsibilities</th></tr></thead><tbody>
+<tr><td>Government of Assam / authorities</td><td>Policy/institutional support; scheme coordination; oversight; possible authorised verification support; proposed pilot funding subject to approval.</td></tr>
+<tr><td>Private technical / operating partner</td><td>Platform development and maintenance; technical integrations; daily operations; user support and improvements.</td></tr>
+<tr><td>Farmers / FPOs</td><td>List produce, participate, provide feedback and follow applicable safety/trading requirements.</td></tr>
+<tr><td>Consumers</td><td>Browse produce, compare information, use order flows and provide feedback.</td></tr>
+</tbody></table>
+<h3>6.2 Proposed financial assumptions</h3>
+<table><thead><tr><th>Item</th><th>Proposal</th></tr></thead><tbody>
+<tr><td>Pilot geography</td><td>Two to three Assam districts; expansion only after evaluation.</td></tr>
+<tr><td>Indicative funding</td><td>₹1–2 crore proposed; not an approved allocation or confirmed budget.</td></tr>
+<tr><td>Profit / operations split</td><td>Proposal states 60% of profit to government and 40% for operational costs—not 60% to the private partner.</td></tr>
+<tr><td>Contract conditions</td><td>Define revenue, expenses, net profit, audit rules, timing, losses, ownership, data governance and termination terms through legal review.</td></tr>
+</tbody></table>
+<h3>6.3 Main risks and mitigations</h3>
+<table><thead><tr><th>Risk</th><th>Proposed mitigation</th></tr></thead><tbody>
+<tr><td>Slow adoption / low trust</td><td>Village demonstrations, simple/local-language interface, field agents and clear verification.</td></tr>
+<tr><td>Fund misuse / poor governance</td><td>Audits, quarterly reporting, milestone-linked funding and transparent procurement.</td></tr>
+<tr><td>Overlap with ONDC, e-NAM or mandis</td><td>Position as complementary where appropriate; assess interoperability later.</td></tr>
+<tr><td>Storage/transport gaps</td><td>Start in selected districts using existing FPOs, collection centres and local transport.</td></tr>
+<tr><td>Low revenue</td><td>Conservative assumptions, staged investment and single-district fallback.</td></tr>
+<tr><td>Privacy / security</td><td>Minimise data, restrict access and review applicable data-protection duties.</td></tr>
+<tr><td>Seasonal volatility</td><td>Diversify produce and provide clearly sourced price information; avoid fixed-price promises.</td></tr>
+</tbody></table>
+</section>
+
+<section class="page" id="roadmap">
+<h2>7. Roadmap, KPIs and Evaluation</h2>
+<table><thead><tr><th>Phase</th><th>Focus</th><th>Exit criteria</th></tr></thead><tbody>
+<tr><td>1. Prototype refinement</td><td>Improve interfaces, document functions, test journeys and limitations.</td><td>Core pages/demo flows reviewed; setup documented.</td></tr>
+<tr><td>2. Technical foundations</td><td>Add/test authentication, persistent data, roles and integrations.</td><td>Security/integration checks pass before real data use.</td></tr>
+<tr><td>3. Pilot preparation</td><td>Engage partners; define verification, logistics, training, support, budget and governance.</td><td>Agreements, funding and operating plan approved.</td></tr>
+<tr><td>4. Pilot and evaluate</td><td>Run limited pilot, gather feedback, audit outcomes and improve.</td><td>Review results against baseline before expansion.</td></tr>
+</tbody></table>
+<h3>7.1 Suggested KPIs</h3>
+<table><thead><tr><th>KPI</th><th>Measurement</th></tr></thead><tbody>
+<tr><td>Farmer participation</td><td>Registered/active farmers; verified records only after authorised process exists.</td></tr>
+<tr><td>Customer adoption</td><td>Registered/active customers, repeat use and feedback.</td></tr>
+<tr><td>Marketplace activity</td><td>Listings, enquiries, orders and completion rate; distinguish demo from real orders.</td></tr>
+<tr><td>Livelihood outcomes</td><td>Compare farmer net earnings and selling costs with a documented baseline.</td></tr>
+<tr><td>Food-safety awareness</td><td>Training participation and adoption of recommended practices; residue claims require testing.</td></tr>
+<tr><td>Service reliability</td><td>Page performance, errors, successful workflows and support response times.</td></tr>
+</tbody></table>
+<h3>7.2 Intended impact</h3>
+<p>VishvKisan aims to improve market access, agricultural information access, scheme awareness, responsible farming and consumer transparency. Increased income, lower consumer prices, reduced losses and food-safety improvement are hypotheses to measure during a properly designed pilot, not results already achieved.</p>
+<h2>8. Repository Documentation Plan</h2>
+<ul><li><strong>README.md:</strong> overview, current status, screenshots, tested setup/run commands and limitations.</li><li><strong>TECHNICAL_DESIGN.md / PDF:</strong> architecture, modules, user journeys, data flow, security, PPP and roadmap.</li><li><strong>Testing checklist:</strong> repeatable manual or automated tests.</li><li><strong>LICENSE:</strong> choose a software licence after deciding reuse terms.</li><li><strong>Configuration:</strong> document setup and environment-variable names only after verifying repository files; never commit secrets.</li></ul>
+<h2 id="references">9. Project Links and References</h2>
+<p><strong>GitHub:</strong> <a href="https://github.com/dhitishmankumar-ctrl/VishvKisan-final-prototype-">https://github.com/dhitishmankumar-ctrl/VishvKisan-final-prototype-</a></p>
+<p><strong>Demonstration prototype:</strong> <a href="https://vishv-kisan-showcase--dhritishmankuma.replit.app">https://vishv-kisan-showcase--dhritishmankuma.replit.app</a></p>
+<p>Use the project proposal as the source for proposed pilot scope, PPP assumptions, risks and intended impact. Confirm scheme information and pesticide guidance with authoritative sources. Confirm implementation claims from the repository and live tests.</p>
+<div class="notice">Final status: This document describes the supplied project concept and technical/proposal information. It does not certify that all modules, integrations, security controls, partnerships, funding arrangements or outcomes are operational or approved.</div>
+</section>
+</main>
+<footer>VishvKisan • Technical Design Document • From Fields to Families</footer>
+</body>
+</html>
